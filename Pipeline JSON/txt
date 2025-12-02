@@ -1,1 +1,707 @@
-txt
+{
+
+    "name": "Incremental_loading through wattermark",
+
+    "objectId": "85732746-8452-49ca-9449-28780730284b",
+
+    "properties": {
+
+        "activities": [
+
+            {
+
+                "name": "Copy data1",
+
+                "type": "Copy",
+
+                "dependsOn": [
+
+                    {
+
+                        "activity": "CURRENT_LOAD",
+
+                        "dependencyConditions": [
+
+                            "Succeeded"
+
+                        ]
+
+                    },
+
+                    {
+
+                        "activity": "LAST_LOAD",
+
+                        "dependencyConditions": [
+
+                            "Succeeded"
+
+                        ]
+
+                    }
+
+                ],
+
+                "policy": {
+
+                    "timeout": "0.12:00:00",
+
+                    "retry": 0,
+
+                    "retryIntervalInSeconds": 30,
+
+                    "secureOutput": false,
+
+                    "secureInput": false
+
+                },
+
+                "typeProperties": {
+
+                    "source": {
+
+                        "type": "AzureSqlSource",
+
+                        "sqlReaderQuery": {
+
+                            "value": "@concat('SELECT * FROM ', pipeline().libraryVariables.table_name_name,' WHERE Date_ID>''',activity('LAST_LOAD').output.value[0].last_load,''' AND DATE_ID <=''',activity('CURRENT_LOAD').output.value[0].max_date,'''')",
+
+                            "type": "Expression"
+
+                        },
+
+                        "queryTimeout": "02:00:00",
+
+                        "partitionOption": "None",
+
+                        "datasetSettings": {
+
+                            "annotations": [],
+
+                            "type": "AzureSqlTable",
+
+                            "schema": [],
+
+                            "typeProperties": {
+
+                                "database": "testdatabase"
+
+                            },
+
+                            "externalReferences": {
+
+                                "connection": "5d934f83-71b4-4923-a80e-1f551b7d68e6"
+
+                            }
+
+                        }
+
+                    },
+
+                    "sink": {
+
+                        "type": "AzureSqlSink",
+
+                        "writeBehavior": "insert",
+
+                        "sqlWriterUseTableLock": false,
+
+                        "tableOption": "autoCreate",
+
+                        "disableMetricsCollection": false,
+
+                        "datasetSettings": {
+
+                            "annotations": [],
+
+                            "type": "AzureSqlTable",
+
+                            "schema": [],
+
+                            "typeProperties": {
+
+                                "schema": "dbo",
+
+                                "table": "Incremented_data",
+
+                                "database": "testdatabase"
+
+                            },
+
+                            "externalReferences": {
+
+                                "connection": "5d934f83-71b4-4923-a80e-1f551b7d68e6"
+
+                            }
+
+                        }
+
+                    },
+
+                    "enableStaging": false,
+
+                    "translator": {
+
+                        "type": "TabularTranslator",
+
+                        "mappings": [
+
+                            {
+
+                                "source": {
+
+                                    "name": "Branch_ID",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Branch_ID",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Dealer_ID",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Dealer_ID",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Model_ID",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Model_ID",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Revenue",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Revenue",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Units_Sold",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Units_Sold",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Date_ID",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Date_ID",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Day",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Day",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Month",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Month",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Year",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Year",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "BranchName",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "BranchName",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "DealerName",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "DealerName",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            },
+
+                            {
+
+                                "source": {
+
+                                    "name": "Product_Name",
+
+                                    "type": "String",
+
+                                    "physicalType": "String"
+
+                                },
+
+                                "sink": {
+
+                                    "name": "Product_Name",
+
+                                    "physicalType": "nvarchar",
+
+                                    "length": "MAX"
+
+                                }
+
+                            }
+
+                        ],
+
+                        "typeConversion": true,
+
+                        "typeConversionSettings": {
+
+                            "allowDataTruncation": true,
+
+                            "treatBooleanAsNumber": false
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            {
+
+                "name": "LAST_LOAD",
+
+                "type": "Lookup",
+
+                "dependsOn": [],
+
+                "policy": {
+
+                    "timeout": "0.12:00:00",
+
+                    "retry": 0,
+
+                    "retryIntervalInSeconds": 30,
+
+                    "secureOutput": false,
+
+                    "secureInput": false
+
+                },
+
+                "typeProperties": {
+
+                    "source": {
+
+                        "type": "AzureSqlSource",
+
+                        "sqlReaderQuery": "SELECT * FROM water_table",
+
+                        "queryTimeout": "02:00:00",
+
+                        "partitionOption": "None"
+
+                    },
+
+                    "firstRowOnly": false,
+
+                    "datasetSettings": {
+
+                        "annotations": [],
+
+                        "type": "AzureSqlTable",
+
+                        "schema": [],
+
+                        "typeProperties": {
+
+                            "database": "testdatabase"
+
+                        },
+
+                        "externalReferences": {
+
+                            "connection": "5d934f83-71b4-4923-a80e-1f551b7d68e6"
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            {
+
+                "name": "CURRENT_LOAD",
+
+                "type": "Lookup",
+
+                "dependsOn": [],
+
+                "policy": {
+
+                    "timeout": "0.12:00:00",
+
+                    "retry": 0,
+
+                    "retryIntervalInSeconds": 30,
+
+                    "secureOutput": false,
+
+                    "secureInput": false
+
+                },
+
+                "typeProperties": {
+
+                    "source": {
+
+                        "type": "AzureSqlSource",
+
+                        "sqlReaderQuery": {
+
+                            "value": "@concat('SELECT MAX(DATE_ID) AS max_date FROM ' ,pipeline().libraryVariables.table_name_name)",
+
+                            "type": "Expression"
+
+                        },
+
+                        "queryTimeout": "02:00:00",
+
+                        "partitionOption": "None"
+
+                    },
+
+                    "firstRowOnly": false,
+
+                    "datasetSettings": {
+
+                        "annotations": [],
+
+                        "type": "AzureSqlTable",
+
+                        "schema": [],
+
+                        "typeProperties": {
+
+                            "database": "testdatabase"
+
+                        },
+
+                        "externalReferences": {
+
+                            "connection": "5d934f83-71b4-4923-a80e-1f551b7d68e6"
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            {
+
+                "name": "Stored procedure1",
+
+                "type": "SqlServerStoredProcedure",
+
+                "dependsOn": [
+
+                    {
+
+                        "activity": "Copy data1",
+
+                        "dependencyConditions": [
+
+                            "Succeeded"
+
+                        ]
+
+                    }
+
+                ],
+
+                "policy": {
+
+                    "timeout": "0.12:00:00",
+
+                    "retry": 0,
+
+                    "retryIntervalInSeconds": 30,
+
+                    "secureOutput": false,
+
+                    "secureInput": false
+
+                },
+
+                "typeProperties": {
+
+                    "storedProcedureName": "[dbo].[UpdateWatermarkTable]",
+
+                    "database": "testdatabase",
+
+                    "storedProcedureParameters": {
+
+                        "lastload": {
+
+                            "value": {
+
+                                "value": "@activity('CURRENT_LOAD').output.value[0].max_date",
+
+                                "type": "Expression"
+
+                            },
+
+                            "type": "String"
+
+                        }
+
+                    }
+
+                },
+
+                "externalReferences": {
+
+                    "connection": "5d934f83-71b4-4923-a80e-1f551b7d68e6"
+
+                }
+
+            }
+
+        ],
+
+        "parameters": {
+
+            "table_name": {
+
+                "type": "string",
+
+                "defaultValue": "dbo.salesdata"
+
+            }
+
+        },
+
+        "variables": {
+
+            "table_name": {
+
+                "type": "String",
+
+                "defaultValue": "dbo.salesdata"
+
+            }
+
+        },
+
+        "libraryVariables": {
+
+            "table_name_name": {
+
+                "type": "String",
+
+                "variableName": "name",
+
+                "libraryName": "table_name"
+
+            }
+
+        },
+
+        "lastModifiedByObjectId": "17ff98ba-f1fd-4135-b515-0b41d0ca7dda",
+
+        "lastPublishTime": "2025-11-28T01:00:25Z"
+
+    }
+
+}
+
+ 
